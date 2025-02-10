@@ -1,6 +1,5 @@
-"use client"; // 👈 Required for useRouter, useState, useEffect
-import Link from "next/link";
-import { useRouter, useParams } from "next/navigation"; // ✅ Correct way to handle params
+"use client";
+import { useParams } from "next/navigation"; 
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";

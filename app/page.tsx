@@ -1,18 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import axios from "axios";
 import LeadList from "../components/LeadList";
 import Calendar from "../components/Calendar";
 import { Button } from "../components/ui/button";
 import Link from "next/link";
 import { Lead } from "@/types/lead";
-import EstimateList from "@/components/EstimateList";
 import { Estimate } from "@/types/estimate";
 
 export default function Home() {
   const [leads, setLeads] = useState<Lead[]>([]);
-  const [estimates, setEstimates] = useState<Estimate[]>([]);
 
 
   useEffect(() => {

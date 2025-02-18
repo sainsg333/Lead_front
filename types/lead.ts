@@ -4,5 +4,6 @@ export interface Lead {
     contact: string;
     source: string;
     status: string;
+    referralCode:string;
     createdAt: string;
   }

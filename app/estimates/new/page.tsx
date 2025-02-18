@@ -20,7 +20,8 @@ export default function NewEstimatePage() {
   useEffect(() => {
     const fetchLeads = async () => {
       try {
-        const res = await axios.get<Lead[]>("https://lead-management-79hs.onrender.com/api/leads");
+        console.log(process.env.source);
+        const res = await axios.get<Lead[]>(`https://lead-management-79hs.onrender.com/api/leads`);
         setLeads(res.data);
       } catch (error) {
         console.error("Failed to fetch leads:", error);
@@ -31,7 +32,7 @@ export default function NewEstimatePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await axios.post("https://lead-management-79hs.onrender.com/api/estimates", formData);
+    await axios.post(`https://lead-management-79hs.onrender.com/api/estimates`, formData);
     router.push("/estimates");
   };
 

@@ -17,7 +17,7 @@ export default function EstimateList({ estimates }: EstimateListProps) {
   useEffect(() => {
     async function fetchEstimates() {
       try {
-        const res = await axios.get("https://lead-management-79hs.onrender.com/api/estimates");
+        const res = await axios.get(`https://lead-management-79hs.onrender.com/api/estimates`);
         setLocalEstimates(res.data);
       } catch (error) {
         console.error("Failed to fetch estimates:", error);

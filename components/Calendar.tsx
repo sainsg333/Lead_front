@@ -1,63 +1,96 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import axios from "axios";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import { Card } from "@/components/ui/card";
-import { Lead } from "@/types/lead";
 import { Estimate } from "@/types/estimate";
 
+type Event = {
+  title: string;
+  date: string;
+  id: string;
+  color: string;
+};
+
 export default function Calendar() {
-  const [events, setEvents] = useState<{ title: string; date: string }[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [hoveredEventId, setHoveredEventId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const leadsRes = await axios.get<Lead[]>("https://lead-management-79hs.onrender.com/api/leads");
-        const leads = leadsRes.data;
-        const estimatesRes = await axios.get<Estimate[]>("https://lead-management-79hs.onrender.com/api/estimates");
-        const estimates = estimatesRes.data;
-        const events = [
-          ...leads.map((lead) => ({
-            title: `Lead: ${lead.name}`,
-            date: new Date(lead.createdAt).toISOString().split("T")[0],
-          })),
-          ...estimates.map((estimate) => ({
+        const estimatesRes = await fetch("https://lead-management-79hs.onrender.com/api/estimates");
+        const estimates = await estimatesRes.json();
+
+        const events: Event[] = estimates.map((estimate: Estimate) => {
+          const createdDate = new Date(estimate.createdAt);
+          const today = new Date();
+          const diffDays = Math.ceil((today.getTime() - createdDate.getTime()) / (1000 * 60 * 60 * 24));
+
+          let color = 'green';
+          if (diffDays >= 7) {
+            color = 'red';
+          } else if (diffDays >= 5) {
+            color = 'orange';
+          }
+
+          return {
             title: `Estimate: ${estimate.lead_id.name}`,
-            date: new Date(estimate.createdAt).toISOString().split("T")[0],
-          })),
-        ];
+            date: createdDate.toISOString().split("T")[0],
+            id: estimate._id,
+            color,
+          };
+        });
 
         setEvents(events);
-        setError(null);
       } catch (err) {
         console.error("Error fetching data for calendar:", err);
-        setError("Failed to fetch data. Please try again later.");
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchData();
   }, []);
 
-  if (loading) {
-    return <div>Loading calendar...</div>;
-  }
-
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
-  }
+  const handleFollowUp = async (eventId: string) => {
+    try {
+      await fetch("https://lead-management-79hs.onrender.com/api/follow-up", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ eventId }),
+      });
+      alert("Follow-up email sent!");
+    } catch (error) {
+      console.error("Error sending follow-up:", error);
+    }
+  };
 
   return (
     <Card className="p-4">
       <FullCalendar
         plugins={[dayGridPlugin]}
         initialView="dayGridMonth"
-        events={events}
+        events={events.map((event) => ({ ...event, backgroundColor: event.color }))}
+        eventContent={(info) => (
+          <div
+            className="flex items-center justify-between"
+            onMouseEnter={() => setHoveredEventId(info.event.id as string)}
+            onMouseLeave={() => setHoveredEventId(null)}
+          >
+            <span className="overflow-hidden">{info.event.title}</span>
+            {info.event.backgroundColor === 'red' && hoveredEventId === info.event.id && (
+              <button
+                className=" bg-blue-500 text-white px-2 py-1 rounded"
+                onClick={() => handleFollowUp(info.event.id as string)}
+                title="Send follow-up reminder"
+              >
+            <span className="overflow-hidden">{info.event.title}</span>
+
+                <span className="bg-green-500">Follow Up</span>
+              </button>
+            )}
+          </div>
+        )}
       />
     </Card>
   );

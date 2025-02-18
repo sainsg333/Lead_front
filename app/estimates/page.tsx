@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export default async function EstimatesPage() {
-  const res = await fetch("https://lead-management-79hs.onrender.com/api/estimates", { cache: "no-store" });
+  const res = await fetch(`https://lead-management-79hs.onrender.com/api/leads`, { cache: "no-store" });
   if (!res.ok) throw new Error("Failed to fetch estimates");
   const estimates: Estimate[] = await res.json();
 

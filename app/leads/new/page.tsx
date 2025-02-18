@@ -1,6 +1,5 @@
 "use client";
 import { useState } from 'react';
-import axios from 'axios';
 import { useRouter } from "next/navigation";
 
 import { Button } from '../../../components/ui/button';
@@ -15,12 +14,24 @@ export default function NewLead() {
     contact: '',
     source: '',
     status: 'New',
+    referralCode: '',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await axios.post('https://lead-management-79hs.onrender.com/api/leads', formData);
-    router.push('/');
+    try {
+      const response = await fetch('https://lead-management-79hs.onrender.com/api/leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      if (!response.ok) throw new Error('Failed to create lead');
+      router.push('/home');
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    }
   };
 
   return (
@@ -54,6 +65,13 @@ export default function NewLead() {
                 value={formData.source}
                 onChange={(e) => setFormData({ ...formData, source: e.target.value })}
                 required
+              />
+            </div>
+            <div>
+              <Label>Referral Code (Optional)</Label>
+              <Input
+                value={formData.referralCode}
+                onChange={(e) => setFormData({ ...formData, referralCode: e.target.value })}
               />
             </div>
             <Button type="submit">Create Lead</Button>

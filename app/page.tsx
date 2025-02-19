@@ -1,35 +1,37 @@
 "use client";
 
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import Link from "next/link";
+
 export default function LoginPage() {
-  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
-    useEffect(() => {
-      if (localStorage.getItem("isLoggedIn") === "true") {
-        router.push("/home");
-      }
-    }, [router]);
-  let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+
+  useEffect(() => {
+    if (localStorage.getItem("isLoggedIn") === "true") {
+      router.push("/home");
+    }
+  }, [router]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const res = await fetch("https://lead-management-79hs.onrender.com/api/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
       if (!res.ok) throw new Error("Login failed");
-      localStorage.setItem("isLoggedIn", "true");
-      router.push("/home");
+
+      // Redirect to OTP verification page
+      router.push("/auth/verify-otp");
     } catch (err) {
       setError("Invalid email or password");
     }

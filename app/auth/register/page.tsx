@@ -28,6 +28,8 @@ export default function RegisterPage() {
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify({ email, password }),
       });
+      const data = await res.json();
+      alert(`secret key ${data.secret}`);
       if (!res.ok) throw new Error("Registration failed");
       localStorage.setItem("isLoggedIn", "true");
       router.push("/");

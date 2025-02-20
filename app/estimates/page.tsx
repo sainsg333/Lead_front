@@ -15,7 +15,7 @@ export default async function EstimatesPage() {
       <Link href="/estimates/new">
         <Button>Create New Estimate</Button>
       </Link>
-      <Link href="/">
+      <Link href="/home">
         <Button>Leads</Button>
       </Link>
       </div>

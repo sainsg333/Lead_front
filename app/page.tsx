@@ -25,7 +25,7 @@ export default function LoginPage() {
     try {
       const res = await fetch("https://lead-management-79hs.onrender.com/api/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json","Authorization":`Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c` },
         body: JSON.stringify({ email, password }),
       });
       if (!res.ok) throw new Error("Login failed");

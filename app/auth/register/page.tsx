@@ -13,13 +13,6 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const router = useRouter();
   let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
-
-  useEffect(() => {
-    if (localStorage.getItem("isLoggedIn") === "true") {
-      router.push("/home");
-    }
-  }, [router]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -31,7 +24,6 @@ export default function RegisterPage() {
       const data = await res.json();
       alert(`secret key ${data.secret}`);
       if (!res.ok) throw new Error("Registration failed");
-      localStorage.setItem("isLoggedIn", "true");
       router.push("/");
     } catch (err) {
       setError("Registration failed. Please try again.");

@@ -17,7 +17,7 @@ export default function EstimateDetail({ estimate, onStatusUpdate }: EstimateDet
 
   const handleUpdate = async (status: string) => {
     try {
-      await axios.put(`https://lead-management-79hs.onrender.com/api/${est._id}`, { status });
+      await axios.put(`https://lead-management-79hs.onrender.com/api/estimates/${est._id}`, { status });
       setEst((prev) => ({ ...prev, status })); // Update local state
       onStatusUpdate(est._id, status);
       setIsEditing(false) // Update parent state immediately
